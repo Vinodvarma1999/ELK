@@ -2,16 +2,12 @@
 
 	sudo wget https://logz.io/sample-data 
 
-	sudo touch apache.log
-
 	sudo cp sample-data apache.log
-
-	cat apache.log
 
 	cd /etc/logstash/conf.d
 
 	sudo nano apachelog.conf
-
+#----------------------------START-------------------------------------
 			input {
 			  file {
 			    path => "/home/ubuntu/apache.log" 
@@ -38,7 +34,7 @@
 			    index => "petclinic-prd-1"		
 			  }
 			}
-#--------------------END-------------------
+#------------------------------END-----------------------------------------
 	sudo systemctl start logstash
 
 	sudo systemctl status logstash
