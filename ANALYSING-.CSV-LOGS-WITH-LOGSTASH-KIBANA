@@ -8,7 +8,7 @@ curl -O https://raw.githubusercontent.com/PacktPublishing/Kibana-7-Quick-Start-G
 
 cd /etc/logstash/conf.d/
 
-sudo nano crimes.conf'
+sudo nano crimes.conf
 
 #-------------------------------------START-----------------------------------
 			input {
