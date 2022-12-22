@@ -1,0 +1,156 @@
+================================================< ELK Hands On: >=========================================================
+
+
+-----------------------------< Configuring Real Time Web logs to inject into Elasticsearch >-------------------------------	
+
+Be in a home directory i.e /home/ubuntu
+
+sudo filebeat modules list
+
+sudo filebeat modules enable system
+
+sudo filebeat modules enable nginx
+
+sudo filebeat modules list
+
+cd /etc/filebeat/modules.d
+
+sudo nano system.yml
+
+#--------------------------------START---------------------------------------
+			
+			write below syslog: -> enabled : var.paths: ["/var/log/syslog*"]
+			 	
+
+			write below auth: -> enabled : var.paths: ["/var/log/auth.log*"]
+			
+#----------------------------------END----------------------------------------
+
+
+sudo nano nginx.yml
+
+#--------------------------------START---------------------------------------
+			
+			write below access: -> enabled : var.paths: ["/var/log/nginx/access.log*"]
+			 	
+			 	// we will also give the path for auth log, it will tell us who all have logged in or logged out
+
+			write below error: -> enabled : var.paths: ["/var/log/nginx/error.log*"]
+      
+#----------------------------------END----------------------------------------
+
+sudo systemctl start filebeat 
+
+
+----------------------------------< Visualisation for the static data (logstash, crimes) >-------------------------------------------
+
+
+--------------------------------------------------< Line graph Visualisation >---------------------------------------------------------
+
+
+Go to browser -> visualize (below discover) -> create new visualization -> 'area' -> 'petclinic-prd-1*'(data to be loaded)
+
+It will open up a dashboard with a graph where you can chose what kind of way you wish to represent your data.
+
+Under 'Y-axis' -> aggregation -> 'count'	-> custom label -> 'HTTP Requests' -> click on 'add metrics'
+
+UNder 'X-axis' -> aggregation -> 'count' -> field -> 'response.keyword' -> order by -> 'metric: HTTP Requests'
+
+go ahead and click the 'play logo' below the data name 
+
+under metrics & axes you can change the type of chart type, mode
+
+try changing the field to 'geoip.country_name:keyword' in the X-axis
+
+try changing the field to 'geoip.timezone:keyword' in the X-axis
+
+Once you have created a visualization you can go ahead and save it. the button will be on top left
+
+save it as '[apache] Total requests based on TImeZone'
+
+SO if you go back and need to come and check the visualizations you had created before you can check it under visualize as it wuold now be saved
+
+--------------------------------------------------< Heat Map Visualisation >--------------------------------------------------------------
+
+Now let's try this again with another type of chart typr - 'Heat map'
+
+Go to browser -> visualize (below discover) -> create new visualization -> 'heatmap' -> 'crimes*'(data to be loaded)
+
+aggregation -> 'count'
+
+custom label -> 'FBI code'
+
+under x-axis -> aggregation -> 'Terms' -> field -> 'FBi code.keyword' -> order by -> 'metric: FBI code'
+
+go ahead and click the 'play logo' below the data name 
+
+under 'options'
+
+you can change the legend position
+
+can change the 'color schema'
+
+can change 'color scale'
+
+we can also see how many hits each section of the heat map has.
+
+----------------------------------------------------< coordinate map Visualisation >------------------------------------------------------
+
+Go to browser -> visualize (below discover) -> create new visualization -> 'heatmap' -> 'petclinic-prd-1*'
+
+Under Buckets
+
+'Geo Coordinates'
+
+aggregation -> 'geohash'-> field -> 'geoip.location'
+
+Under options
+
+you can change the color
+
+so you can now see where your http requests are coming from and accordingly plan 
+
+now go ahead and save this visualizations as [apache] geo IP
+
+-----------------------------------------------------< creating dashboard >------------------------------------------------------
+
+go to dashboard (below discover)
+
+click on 'create new dashboard'
+
+click on 'add' -> [apache] geo IP & [apache] Total requests based on TImeZone
+
+you can also resize the visualisation windows acc to your need
+
+Then you can save it as 'apache dashboard'
+
+---------------------------------------------< Visualisation for the static data (nginx, system) >---------------------------------------
+
+Go to home -> Mangement -> kibana -> index patterns (under kibana) -> create index pattern
+	
+enter 'filebeat*' -> '@timestamp' 	
+	
+sudo filebeat setup -e
+
+now let's go to ELK -> kibana -> visualisations 
+
+In the search bar we will type 'nginx'  and we will get some visualizations relating to it.
+
+click on 'dashboards [filebeat Nginx] ECS'
+
+go to dashboard -> search 'nginx'
+
+click on '[filebeat nginx] Overview ECS'
+
+you can now see a dashboard with multitude of details - we can see if it is doing it real time or not by hitting the webserver from a different browser
+
+just refresh and you will see all the new data
+
+then just explore the dashboard and try to explain what all stuff you see
+
+There is a machine learning feature too, but it's a paid feature
+
+There is also a automated report generation option, alos paid feature
+
+There is a notification system which is also a paid feature
+
